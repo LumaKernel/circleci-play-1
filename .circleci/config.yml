@@ -4,28 +4,34 @@ orbs:
   python: circleci/python@0.2.1
 
 jobs:
-  database:
+  prebuild:
+    working_directory: ~/circle
     docker:
-      - image: circleci/postgres:12.3
-        environment:
-          POSTGRES_USER: mysite
-          POSTGRES_DB: top-secret
-    steps: []
-  build-and-test:
-    executor: python/default
+      - image: circleci/node:12
     steps:
       - checkout
-      - python/load-cache
-      - python/install-deps
-      - python/save-cache
       - run:
-          command: ./manage.py test
+          command: node prebuild.js
+  build-and-test:
+    working_directory: ~/circle
+    docker:
+      - image: circleci/python:3.6.9
+        environment:
+          PIPENV_VENV_IN_PROJECT: true
+          DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
+      - image: circleci/postgres:12.2
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: circle_test
+    steps:
+      - run:
           name: Test
+          command: ./manage.py test
 
 workflows:
   main:
     jobs:
-      - database
+      - prebuild
       - build-and-test:
           requires:
-            - database
+            - prebuild
