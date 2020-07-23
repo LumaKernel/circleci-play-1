@@ -7,6 +7,8 @@ jobs:
       - image: lumakernel/cimg-python-node:3.6.9-12
         environment:
           DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
+          SECRET_KEY: "this is only for test secret-key"
+          DEBUG: "1"
       - image: circleci/postgres:12.2
         environment:
           POSTGRES_USER: root
