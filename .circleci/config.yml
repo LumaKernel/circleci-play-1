@@ -1,23 +1,11 @@
 version: 2.1
 
-orbs:
-  python: circleci/python@0.2.1
-
 jobs:
-  prebuild:
-    working_directory: ~/circle
-    docker:
-      - image: circleci/node:12
-    steps:
-      - checkout
-      - run:
-          command: node prebuild.js
   build-and-test:
     working_directory: ~/circle
     docker:
-      - image: circleci/python:3.6.9
+      - image: lumakernel/python-node:3.6.9-12
         environment:
-          PIPENV_VENV_IN_PROJECT: true
           DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
       - image: circleci/postgres:12.2
         environment:
@@ -29,13 +17,12 @@ jobs:
       - run:
           name: Test
           command: |
+            node prebuild.js
+            pip install -U pip
             pip install -r requirements.txt
             ./manage.py test
 
 workflows:
   main:
     jobs:
-      - prebuild
-      - build-and-test:
-          requires:
-            - prebuild
+      - build-and-test
