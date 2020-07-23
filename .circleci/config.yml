@@ -4,6 +4,13 @@ orbs:
   python: circleci/python@0.2.1
 
 jobs:
+  database:
+    docker:
+      - image: circleci/postgres:12.3
+        environment:
+          POSTGRES_USER: mysite
+          POSTGRES_DB: top-secret
+    steps: []
   build-and-test:
     executor: python/default
     steps:
@@ -18,4 +25,7 @@ jobs:
 workflows:
   main:
     jobs:
-      - build-and-test
+      - database
+      - build-and-test:
+          requires:
+            - database
