@@ -1,0 +1,8 @@
+{{ question_list.count }}個の質問
+<ul>
+  {% for question in question_list %}
+    <li>
+      {{ forloop.counter }}. {{ question.desc }}
+    </li>
+  {% endfor %}
+</ul>
