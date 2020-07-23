@@ -4,7 +4,7 @@ jobs:
   build-and-test:
     working_directory: ~/circle
     docker:
-      - image: lumakernel/python-node:3.6.9-12
+      - image: lumakernel/cimg-python-node:3.6.9-12
         environment:
           DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
       - image: circleci/postgres:12.2
