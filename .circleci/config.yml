@@ -28,7 +28,9 @@ jobs:
       - checkout
       - run:
           name: Test
-          command: ./manage.py test
+          command: |
+            pip install -r requirements.txt
+            ./manage.py test
 
 workflows:
   main:
